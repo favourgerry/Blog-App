@@ -11,7 +11,7 @@ SECRET_KEY = 'django-insecure-CHANGE_THIS_TO_YOUR_SECRET_KEY'
 
 DEBUG = False
 
-# Allow all hosts for now — Railway will assign its own domain
+# ✅ Allow all hosts temporarily — you can restrict later
 ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -27,7 +27,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ added for static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ must be right after SecurityMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -41,7 +41,7 @@ ROOT_URLCONF = 'myblog.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # Add global template dirs if needed
+        'DIRS': [BASE_DIR / 'templates'],  # ✅ optional global templates folder
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -56,7 +56,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'myblog.wsgi.application'
 
-# Database (using SQLite for now — we can switch to PostgreSQL later)
+# Database (SQLite for now)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -78,11 +78,18 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# ✅ Static files configuration for Railway + WhiteNoise
+# ✅ STATIC FILES (this is what fixes your unstyled admin)
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# ✅ Enable WhiteNoise compression & caching
+# Folder where `collectstatic` will gather all files (including admin CSS/JS)
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Optional: include a `static/` folder for custom assets
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
+# ✅ Enable WhiteNoise compression and caching
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
