@@ -7,12 +7,12 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-CHANGE_THIS_TO_YOUR_SECRET_KEY'
+# ✅ Use environment variables
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-key-for-dev-only')
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-DEBUG = False
-
-# ✅ Allow all hosts temporarily — you can restrict later
-ALLOWED_HOSTS = ['*']
+# ✅ Allow all hosts temporarily, or set via environment variable
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
 # Application definition
 INSTALLED_APPS = [
@@ -27,7 +27,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ must be right after SecurityMiddleware
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # must be right after SecurityMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -41,7 +41,7 @@ ROOT_URLCONF = 'myblog.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # ✅ optional global templates folder
+        'DIRS': [BASE_DIR / 'templates'],  # optional global templates folder
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -56,7 +56,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'myblog.wsgi.application'
 
-# Database (SQLite for now)
+# Database (SQLite for now, can switch to Postgres later using DATABASE_URL)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -78,18 +78,12 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# ✅ STATIC FILES (this is what fixes your unstyled admin)
+# Static files
 STATIC_URL = '/static/'
-
-# Folder where `collectstatic` will gather all files (including admin CSS/JS)
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# Optional: include a `static/` folder for custom assets
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
-
-# ✅ Enable WhiteNoise compression and caching
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
