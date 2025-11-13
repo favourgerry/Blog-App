@@ -3,4 +3,4 @@ gunicorn
 whitenoise
 psycopg2-binary
 django-jazzmin
-WeasyPrint
+reportlab
