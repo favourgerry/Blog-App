@@ -1,0 +1,51 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block content %}
+
+<h1 style="margin-bottom: 20px;">Admin Dashboard</h1>
+
+<div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px;">
+
+    <div style="flex: 1; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 5px #ccc;">
+        <h3>Total Revenue</h3>
+        <h1>₵{{ total_revenue }}</h1>
+    </div>
+
+    <div style="flex: 1; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 5px #ccc;">
+        <h3>Total Projects</h3>
+        <h1>{{ total_projects }}</h1>
+    </div>
+
+    <div style="flex: 1; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 5px #ccc;">
+        <h3>Total Invoices</h3>
+        <h1>{{ total_invoices }}</h1>
+    </div>
+
+</div>
+
+<canvas id="revenueChart" height="90"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const chartData = {{ monthly_revenue|safe }};
+
+new Chart(document.getElementById('revenueChart'), {
+    type: 'bar',
+    data: {
+        labels: chartData.map(x => "Month " + x.month),
+        datasets: [{
+            label: "Monthly Revenue",
+            data: chartData.map(x => x.total),
+            borderWidth: 2
+        }]
+    }
+});
+</script>
+
+<hr style="margin: 40px 0;">
+
+{{ block.super }}
+
+{% endblock %}
